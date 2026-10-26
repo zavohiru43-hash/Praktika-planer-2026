@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form_title }} | Планировщик задач</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 35px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            color: #20352a;
+            background:
+                radial-gradient(circle at top left, #d9f7d9, transparent 45%),
+                linear-gradient(135deg, #e9f8e9, #c6ebd0);
+        }
+
+        .task-card {
+            width: 100%;
+            max-width: 620px;
+            padding: 38px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 18px 55px rgba(31, 91, 52, 0.14);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #31834b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #205d35;
+            text-decoration: underline;
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            background: #e1f5e5;
+            color: #267b40;
+            font-size: 27px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 29px;
+            color: #203b2a;
+        }
+
+        .subtitle {
+            margin: 0 0 28px;
+            color: #718176;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #314b39;
+        }
+
+        input,
+        textarea,
+        select {
+            display: block;
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d6e4d9;
+            border-radius: 11px;
+            outline: none;
+            background: #fbfdfb;
+            color: #263b2d;
+            font: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #53a96b;
+            box-shadow: 0 0 0 3px rgba(83, 169, 107, 0.13);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .field-hint {
+            display: block;
+            margin-top: 8px;
+            color: #78877c;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .flash.error,
+        .flash.danger {
+            background: #fff0ef;
+            border: 1px solid #f2c5c1;
+            color: #a52f27;
+        }
+
+        .flash.success {
+            background: #eaf8ed;
+            border: 1px solid #c6e8cd;
+            color: #246b37;
+        }
+
+        .flash.warning {
+            background: #fff8e5;
+            border: 1px solid #f0dfa6;
+            color: #805c11;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-primary {
+            flex: 1;
+            color: #ffffff;
+            background: #31834b;
+        }
+
+        .btn-primary:hover {
+            background: #256a3b;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            color: #405c47;
+            background: #edf4ee;
+        }
+
+        .btn-secondary:hover {
+            background: #dfece1;
+        }
+
+        .footer-note {
+            margin-top: 23px;
+            padding-top: 18px;
+            border-top: 1px solid #edf1ed;
+            color: #879389;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 520px) {
+            .task-card {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="task-card">
+        <a class="back-link" href="{{ url_for('home') }}">
+            ← Вернуться к задачам
+        </a>
+
+        <div class="icon-box">✓</div>
+
+        <h1>{{ form_title }}</h1>
+        <p class="subtitle">
+            Заполните информацию о задаче и сохраните изменения.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">Название задачи *</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    maxlength="150"
+                    placeholder="Например, подготовить проект"
+                    value="{{ form_data.get('title', task.title if task else '') }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Дополнительная информация о задаче..."
+                >{{ form_data.get('description', task.description if task else '') }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="due_date">Срок выполнения</label>
+                <input
+                    type="text"
+                    id="due_date"
+                    name="due_date"
+                    placeholder="01.01.2026"
+                    value="{{ form_data.get('due_date', task.due_date.strftime('%d.%m.%Y') if task and task.due_date else '') }}"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}"
+                    title="Введите дату в формате ДД.ММ.ГГГГ, например 01.01.2026"
+                >
+                <span class="field-hint">
+                    Формат: ДД.ММ.ГГГГ. Например, 01.01.2026.
+                    Ввод 01012026 без точек не допускается.
+                </span>
+            </div>
+
+            {% if task %}
+                <div class="form-group">
+                    <label for="status">Статус задачи</label>
+                    <select id="status" name="status">
+                        {% for item in ["Новая", "В работе", "Выполнена"] %}
+                            <option
+                                value="{{ item }}"
+                                {% if task.status == item %}selected{% endif %}
+                            >
+                                {{ item }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">
+                    Сохранить задачу
+                </button>
+                <a class="btn btn-secondary" href="{{ url_for('home') }}">
+                    Отмена
+                </a>
+            </div>
+        </form>
+
+        <div class="footer-note">
+            Поля со звёздочкой обязательны для заполнения.
+            Дату можно оставить пустой, если срок выполнения не установлен.
+        </div>
+    </main>
+</body>
+</html>

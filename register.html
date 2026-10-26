@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — Planer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f6f9f7;
+            color: #24332c;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e5ece7;
+        }
+
+        nav {
+            max-width: 1050px;
+            margin: auto;
+            padding: 19px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #168568;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: #168568;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 38px 18px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            border: 1px solid #e3ebe5;
+            border-radius: 18px;
+            padding: 34px;
+            box-shadow: 0 12px 35px rgba(29, 65, 47, 0.05);
+        }
+
+        .eyebrow {
+            color: #168568;
+            background: #e8f5ef;
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        h1 {
+            font-size: 29px;
+            letter-spacing: -0.7px;
+            margin: 18px 0 9px;
+        }
+
+        .subtitle {
+            color: #77847d;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 25px;
+        }
+
+        .field {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dce6df;
+            border-radius: 9px;
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #168568;
+            box-shadow: 0 0 0 3px rgba(22, 133, 104, 0.1);
+        }
+
+        .button {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #168568;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .button:hover {
+            background: #106b53;
+        }
+
+        .bottom {
+            margin-top: 23px;
+            text-align: center;
+            font-size: 13px;
+            color: #77847d;
+        }
+
+        .bottom a {
+            color: #168568;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.error {
+            color: #a52828;
+            background: #fff0f0;
+            border: 1px solid #f4cccc;
+        }
+
+        .message.success {
+            color: #126b4d;
+            background: #e8f7ef;
+            border: 1px solid #c5ead5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px;
+            color: #89958d;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a class="logo" href="/">planer.</a>
+            <a class="nav-link" href="{{ url_for('login') }}">Войти</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <span class="eyebrow">НОВЫЙ АККАУНТ</span>
+
+            <h1>Регистрация</h1>
+
+            <p class="subtitle">
+                Создайте аккаунт, чтобы управлять своими задачами.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for category, message in messages %}
+                            <div class="message {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="field">
+                    <label for="username">Имя пользователя</label>
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        placeholder="Придумайте имя пользователя"
+                        autocomplete="username"
+                        maxlength="50"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="email">Электронная почта</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        placeholder="Введите электронную почту"
+                        autocomplete="email"
+                        maxlength="120"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="password">Пароль</label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Минимум 8 символов"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="confirm_password">
+                        Подтверждение пароля
+                    </label>
+                    <input
+                        id="confirm_password"
+                        type="password"
+                        name="confirm_password"
+                        placeholder="Повторите пароль"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <button class="button" type="submit">
+                    Создать аккаунт
+                </button>
+            </form>
+
+            <div class="bottom">
+                Уже зарегистрированы?
+                <a href="{{ url_for('login') }}">Войти</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>planer. · Планируйте с удобством</footer>
+</body>
+</html>

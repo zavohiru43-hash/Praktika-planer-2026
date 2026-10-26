@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мои задачи — Planer</title>
+<style>
+:root{--green:#168568;--green-dark:#106b53;--green-light:#e8f5ef;--bg:#f6f9f7;--text:#24332c;--muted:#77847d;--border:#e5ece7;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{color:inherit;text-decoration:none}
+header{background:#fff;border-bottom:1px solid var(--border)}
+.navbar{max-width:1180px;margin:auto;padding:19px 24px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.logo{color:var(--green);font-size:25px;font-weight:800;letter-spacing:-1px}
+.nav-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.username{color:var(--muted);font-size:14px}
+.nav-link{font-size:14px;font-weight:600}.nav-link:hover{color:var(--green)}
+.logout-form,.task-actions form{margin:0}
+.logout-button{border:1px solid var(--border);background:white;padding:9px 14px;border-radius:9px;cursor:pointer;color:var(--text)}
+main{max-width:1180px;margin:38px auto;padding:0 24px 40px}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+h1{font-size:30px;margin:0 0 8px;letter-spacing:-.8px}
+.subtitle{color:var(--muted);margin:0}
+.button{display:inline-flex;justify-content:center;align-items:center;border:0;border-radius:10px;padding:12px 17px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s}
+.button-primary{background:var(--green);color:white}.button-primary:hover{background:var(--green-dark)}
+.button-secondary{background:var(--green-light);color:var(--green-dark)}.button-secondary:hover{background:#d9eee3}
+.button-danger{background:#fff0ee;color:#b64035}.button-danger:hover{background:#ffe2de}
+.panel{background:white;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:24px;box-shadow:0 4px 16px rgba(29,65,47,.025)}
+.filter-panel{padding:25px;border-radius:14px}
+.filter-heading{margin-bottom:20px;padding-bottom:17px;border-bottom:1px solid #edf1ee}
+.filter-heading h2{margin:0 0 7px;font-size:19px}.filter-heading p{margin:0;color:#7b8981;font-size:13px;line-height:1.6}
+.filter-form{display:flex;flex-direction:column;gap:18px}
+.field label,.filter-label{display:block;margin-bottom:8px;font-size:13px;font-weight:700;color:#56665d}
+input,select{width:100%;padding:12px 13px;border:1px solid #dce6df;border-radius:9px;background:#fff;color:var(--text);font:inherit;font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,133,104,.1)}
+.filter-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.status-options{display:flex;flex-wrap:wrap;gap:9px}
+.status-option{position:relative}
+.status-option input{position:absolute;opacity:0;width:1px;height:1px}
+.status-option label{display:inline-flex;align-items:center;gap:9px;margin:0;padding:10px 14px;border:1px solid #dce6df;border-radius:999px;background:#fff;color:#56665d;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
+.status-option label:before{content:"";width:13px;height:13px;border:2px solid #aab8af;border-radius:50%;background:white;box-shadow:inset 0 0 0 3px white}
+.status-option input:checked+label{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+.status-option input:checked+label:before{border-color:var(--green);background:var(--green)}
+.status-option input:focus-visible+label{outline:3px solid #b9e4ce;outline-offset:2px}
+.filter-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:3px}
+.filter-actions .button{min-height:42px}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.section-heading h2{font-size:20px;margin:0}
+.task-count{color:var(--green-dark);background:var(--green-light);padding:6px 10px;border-radius:20px;font-size:13px;font-weight:700}
+.task-list{display:grid;gap:14px}
+.task-card{border:1px solid var(--border);border-radius:13px;padding:19px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;background:white;transition:border-color .2s,transform .2s}
+.task-card:hover{border-color:#b9d9c8;transform:translateY(-1px)}
+.task-title{font-size:17px;font-weight:700;margin:0 0 9px;overflow-wrap:anywhere}
+.task-description{color:#69776f;font-size:14px;line-height:1.6;margin:0 0 13px;overflow-wrap:anywhere}
+.task-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.status{display:inline-block;border-radius:20px;padding:6px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.status-new{background:#edf2f6;color:#536574}.status-progress{background:#fff3d9;color:#8c6818}.status-done{background:#e3f5e9;color:#21744d}
+.task-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.task-actions .button{padding:9px 12px;font-size:13px}
+.status-form{display:flex;gap:8px;align-items:center}
+.status-form select{min-width:125px;padding:9px}
+.flash{padding:13px 16px;border-radius:10px;margin-bottom:16px;background:var(--green-light);color:var(--green-dark);border:1px solid #cce8d8;font-size:14px}
+.empty-state{text-align:center;padding:48px 20px;border:1px dashed #cbdad0;border-radius:13px;background:#fbfdfb}
+.empty-state h3{margin:0 0 8px;font-size:18px}.empty-state p{margin:0 0 20px;color:var(--muted)}
+footer{text-align:center;padding:20px;color:#89958d;font-size:12px}
+@media(max-width:850px){.filter-row{grid-template-columns:1fr}.task-card{grid-template-columns:1fr}.task-actions{justify-content:flex-start}}
+@media(max-width:600px){.navbar,.page-heading{align-items:flex-start;flex-direction:column}.nav-right{gap:12px}main{margin-top:25px;padding:0 14px 30px}.filter-panel{padding:18px}.filter-actions .button{width:100%}h1{font-size:26px}.task-actions,.status-form{width:100%}.status-form select{flex:1}}
+</style>
+</head>
+<body>
+<header><nav class="navbar">
+<a class="logo" href="/">planer.</a>
+<div class="nav-right">
+<span class="username">{{ session.get('username', '') }}</span>
+<a class="nav-link" href="/">На главную</a>
+<form class="logout-form" action="/logout" method="POST"><button class="logout-button" type="submit">Выйти</button></form>
+</div>
+</nav></header>
+<main>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}<div class="flash">{{ message }}</div>{% endfor %}
+{% endwith %}
+<div class="page-heading">
+<div><h1>Мои задачи</h1><p class="subtitle">Планируйте дела и следите за прогрессом.</p></div>
+<a href="/tasks/new" class="button button-primary">+ Новая задача</a>
+</div>
+
+<section class="panel filter-panel">
+<div class="filter-heading"><h2>Управление списком</h2><p>Найдите нужную задачу, выберите статус или порядок отображения.</p></div>
+<form action="/home" method="GET" class="filter-form" id="filter-form">
+<div class="field">
+<label for="q">Поиск по задачам</label>
+<input id="q" type="text" name="q" placeholder="Введите название или описание" value="{{ request.args.get('q', '') }}">
+</div>
+<div class="filter-row">
+<div>
+<span class="filter-label">Статус задачи</span>
+<div class="status-options">
+<div class="status-option"><input type="radio" id="status-all" name="status" value="" {% if not request.args.get('status') %}checked{% endif %}><label for="status-all">Все</label></div>
+<div class="status-option"><input type="radio" id="status-new" name="status" value="Новая" {% if request.args.get('status') == 'Новая' %}checked{% endif %}><label for="status-new">Новая</label></div>
+<div class="status-option"><input type="radio" id="status-progress" name="status" value="В работе" {% if request.args.get('status') == 'В работе' %}checked{% endif %}><label for="status-progress">В работе</label></div>
+<div class="status-option"><input type="radio" id="status-done" name="status" value="Выполнена" {% if request.args.get('status') == 'Выполнена' %}checked{% endif %}><label for="status-done">Выполнена</label></div>
+</div>
+</div>
+<div class="field">
+<label for="sort">Порядок отображения</label>
+<select id="sort" name="sort">
+<option value="newest" {% if request.args.get('sort', 'newest') == 'newest' %}selected{% endif %}>По дате создания: новые сначала</option>
+<option value="oldest" {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>По дате создания: старые сначала</option>
+<option value="due_date" {% if request.args.get('sort') == 'due_date' %}selected{% endif %}>По сроку выполнения</option>
+<option value="title_asc" {% if request.args.get('sort') == 'title_asc' %}selected{% endif %}>По названию: А–Я</option>
+<option value="title_desc" {% if request.args.get('sort') == 'title_desc' %}selected{% endif %}>По названию: Я–А</option>
+</select>
+</div>
+</div>
+<div class="filter-actions"><button class="button button-primary" type="submit">Показать результаты</button><a class="button button-secondary" href="/home">Сбросить фильтры</a></div>
+</form>
+</section>
+
+<section class="panel">
+<div class="section-heading"><h2>Список задач</h2><span class="task-count">{{ tasks|length }} задач</span></div>
+{% if tasks %}
+<div class="task-list">
+{% for task in tasks %}
+<article class="task-card">
+<div>
+<h3 class="task-title">{{ task.title }}</h3>
+{% if task.description %}<p class="task-description">{{ task.description }}</p>{% endif %}
+<div class="task-meta">
+<span class="status {% if task.status == 'Выполнена' %}status-done{% elif task.status == 'В работе' %}status-progress{% else %}status-new{% endif %}">{{ task.status }}</span>
+{% if task.due_date %}<span>Срок: {{ task.due_date.strftime('%d.%m.%Y') if task.due_date.strftime is defined else task.due_date }}</span>{% endif %}
+</div>
+</div>
+<div class="task-actions">
+<form class="status-form" action="/tasks/{{ task.id }}/status" method="POST">
+<select name="status" aria-label="Изменить статус">
+<option value="Новая" {% if task.status == 'Новая' %}selected{% endif %}>Новая</option>
+<option value="В работе" {% if task.status == 'В работе' %}selected{% endif %}>В работе</option>
+<option value="Выполнена" {% if task.status == 'Выполнена' %}selected{% endif %}>Выполнена</option>
+</select><button class="button button-secondary" type="submit">Сохранить</button>
+</form>
+<a class="button button-secondary" href="/tasks/{{ task.id }}/edit">Изменить</a>
+<form action="/tasks/{{ task.id }}/delete" method="POST" onsubmit="return confirm('Удалить эту задачу?');"><button class="button button-danger" type="submit">Удалить</button></form>
+</div>
+</article>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><h3>Задач не найдено</h3><p>Создайте первую задачу или измените параметры фильтрации.</p><a href="/tasks/new" class="button button-primary">Создать задачу</a></div>
+{% endif %}
+</section>
+</main>
+<footer>planer. · Ваши дела под контролем</footer>
+</body>
+</html>

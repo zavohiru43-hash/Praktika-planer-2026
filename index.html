@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planer — планировщик задач</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f6f9f7; color: #24332c; }
+        a { color: inherit; text-decoration: none; }
+        header { background: white; border-bottom: 1px solid #e5ece7; }
+        nav { max-width: 1120px; margin: auto; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .logo { font-size: 26px; font-weight: 800; color: #168568; letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { font-size: 14px; font-weight: 600; }
+        .nav-links a:hover { color: #168568; }
+        .button { display: inline-block; padding: 13px 19px; border-radius: 10px; font-size: 14px; font-weight: 700; border: 0; cursor: pointer; }
+        .primary { background: #168568; color: white; }
+        .primary:hover { background: #106b53; }
+        .secondary { background: #e8f5ef; color: #106b53; }
+        .hero { max-width: 900px; margin: auto; padding: 100px 24px 85px; text-align: center; }
+        .eyebrow { display: inline-block; background: #e8f5ef; color: #106b53; border-radius: 30px; padding: 8px 12px; font-size: 12px; font-weight: 700; }
+        h1 { font-size: clamp(36px, 5vw, 57px); line-height: 1.1; letter-spacing: -1.8px; margin: 22px 0; }
+        h1 span { color: #168568; }
+        .lead { color: #6c7a72; line-height: 1.8; font-size: 17px; max-width: 600px; margin: 0 auto; }
+        .hero-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+        .features { max-width: 1120px; margin: auto; padding: 0 24px 65px; }
+        .features h2 { font-size: 27px; margin-bottom: 24px; text-align: center; }
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+        .feature { background: white; border: 1px solid #e5ece7; border-radius: 15px; padding: 23px; }
+        .feature h3 { font-size: 16px; margin: 0 0 10px; }
+        .feature p { color: #77847d; font-size: 14px; line-height: 1.7; margin: 0; }
+        footer { border-top: 1px solid #e5ece7; text-align: center; padding: 23px; color: #89958d; font-size: 12px; }
+        @media (max-width: 750px) {
+            .hero { padding-top: 60px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            nav { align-items: flex-start; }
+            .nav-links { justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <a class="logo" href="/">planer.</a>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+                <span>{{ session.get('username', '') }}</span>
+                <a href="/home">Мои задачи</a>
+                <form action="/logout" method="POST" style="margin:0">
+                    <button class="button secondary" type="submit">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login') }}">Войти</a>
+                <a class="button primary" href="{{ url_for('register') }}">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <span class="eyebrow">ПРОСТОЙ ПОДХОД К ПЛАНИРОВАНИЮ</span>
+        <h1>Ваши задачи.<br>Ваш <span>порядок.</span></h1>
+        <p class="lead">Создавайте задачи, устанавливайте сроки и отслеживайте выполнение в одном удобном пространстве.</p>
+        <div class="hero-actions">
+            {% if session.get('user_id') %}
+                <a class="button primary" href="/home">Перейти к задачам</a>
+            {% else %}
+                <a class="button primary" href="{{ url_for('register') }}">Начать работу</a>
+                <a class="button secondary" href="{{ url_for('login') }}">У меня есть аккаунт</a>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Всё необходимое для порядка</h2>
+        <div class="feature-grid">
+            <div class="feature">
+                <h3>Управление задачами</h3>
+                <p>Создавайте задачи, редактируйте описание и отмечайте выполненные дела.</p>
+            </div>
+            <div class="feature">
+                <h3>Контроль сроков</h3>
+                <p>Указывайте даты выполнения и держите важные дела под контролем.</p>
+            </div>
+            <div class="feature">
+                <h3>Удобный поиск</h3>
+                <p>Находите нужные задачи с помощью поиска, фильтров и сортировки.</p>
+            </div>
+        </div>
+    </section>
+</main>
+<footer>planer. · Планируйте с удобством</footer>
+</body>
+</html>
